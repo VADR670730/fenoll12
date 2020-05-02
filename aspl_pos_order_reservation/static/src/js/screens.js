@@ -340,7 +340,7 @@ odoo.define('aspl_pos_order_reservation.screens', function (require) {
 	            if(self.date !== "" && self.date !== "all"){
 	            	var x = [];
 	            	for (var i=0; i<orders.length;i++){
-	                    var date_order = $.datepicker.formatDate("ddy-mm-yy",new Date(orders[i].date_order));
+	                    var date_order = $.datepicker.formatDate("dd-mm-yy",new Date(orders[i].date_order));
 	            		if(self.date === date_order){
 	            			x.push(orders[i]);
 	            		}
@@ -433,7 +433,7 @@ odoo.define('aspl_pos_order_reservation.screens', function (require) {
             	} else {
             	    currentOrder.set_draft_order(true);
             	}
-				if(!currentOrder.get_delivery_date()){
+				if(!currentOrder.get_delivery_date() || (currentOrder.get_reservation_mode())){
 					self.gui.show_popup("delivery_date_popup", { 'payment_obj': self, 'new_date': true });
 				} else {
 					if(currentOrder.get_total_paid() != 0){
@@ -468,8 +468,17 @@ odoo.define('aspl_pos_order_reservation.screens', function (require) {
             }
         },
         validate_order: function(force_validation){
-        	this.pos.get_order().set_reservation_mode(false);
-        	this._super(force_validation);
+            var order = this.pos.get_order();
+            var client = order.get_client();
+            var self = this;
+            if(self.$('.next').hasClass('highlight')) {
+                if(order.get_reservation_mode() && client.remaining_credit_limit >= 0) {
+                    this.finalize_validation();
+                }
+                
+                this.pos.get_order().set_reservation_mode(false);
+                this._super(force_validation);
+            }
         },
         show: function(){
             var self = this;
@@ -490,6 +499,10 @@ odoo.define('aspl_pos_order_reservation.screens', function (require) {
             }
             if((order.get_paying_due() || order.get_cancel_order())){
                 self.$('#partial_pay').text("Pay");
+            }
+            var client = order.get_client();
+            if(order.attributes.delivery_date && client.remaining_credit_limit >= 0){
+                self.$('.next').addClass('highlight');
             }
         },
         click_back: function(){

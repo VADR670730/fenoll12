@@ -66,7 +66,7 @@
                                                  <th>Fecha de orden</th>
                                                  <th>Total</th>
                                                  <t t-if="widget.pos.config and widget.pos.config.enable_order_reservation">
-                                                     <th>Monto adeudado</th>
+                                                     <th>Saldo reservas</th>
                                                  </t>
                                                  <t t-if="widget.pos.config and widget.pos.config.enable_order_reservation">
                                                      <th>Pagar</th>
@@ -166,20 +166,20 @@
         <t t-jquery="[t-foreach='paymentlines']" t-operation="replace">
     	    <t t-if="receipt.total_paid_amt">
 	    	    <line>
-	                <left>Monto total pagado :</left>
+	                <left>Total pagado :</left>
 	                <right>
 	                    <value><t t-esc='receipt.total_paid_amt'/></value>
 	                </right>
 	            </line><br/>
 	        </t>
-            <t t-if="receipt.amount_due">
+            <!--t t-if="receipt.amount_due">
                 <line>
-                    <left>Monto Adeudado :</left>
+                    <left>... :</left>
                     <right>
                         <value><t t-esc='receipt.amount_due'/></value>
                     </right>
                 </line><br/>
-            </t>
+            </t-->
         </t>
     </t>
 
@@ -256,14 +256,14 @@
             </t>
         </t>
     	<t t-jquery="table.receipt-paymentlines" t-operation="after">
-            <table>
+            <!--table>
                 <tr>
-                    <td>Monto adeudado:</td>
+                    <td>.....:</td>
                     <td class="pos-right-align">
                         <t t-esc="widget.format_currency(order.get_due())"/>
                     </td>
                 </tr>
-            </table>
+            </table-->
     	</t>
         <t t-jquery="[t-foreach='paymentlines']" t-operation="after">
             <t t-if="order.get_journal()">
@@ -477,7 +477,7 @@
                                 <span class="value" style="border-bottom: thin solid #000;"><t t-esc="widget.order_tobe_cancel ? widget.format_currency(widget.order_tobe_cancel.amount_paid) : 0.00" /></span>
                             </div>
                             <div class="new_amount_due">
-                                <span class="label">(=)Nuevo monto adeudado</span>
+                                <span class="label">(=) diferencia</span>
                                 <span class="value"></span>
                             </div>
 
@@ -595,7 +595,7 @@
     <t t-extend="ClientDetails">
         <t t-jquery="div.client-details-left" t-operation="append">
             <div class='client-detail'>
-                <span class='label'>Limite de Credito</span>
+                <span class='label'>Limite de saldo</span>
                 <t t-if='partner.credit_limit'>
                     <span class='detail credit_limit'><t t-esc='partner.credit_limit.toFixed(2)'/></span>
                 </t>
@@ -606,7 +606,7 @@
         </t>
         <t t-jquery="div.client-details-right" t-operation="append">
             <div class='client-detail'>
-                <span class='label'>Crédito restante</span>
+                <span class='label'>saldo restante</span>
                 <t t-if='partner.remaining_credit_limit'>
                     <span class='detail remaining_credit_limit'><t t-esc='partner.remaining_credit_limit.toFixed(2)'/></span>
                 </t>
@@ -620,7 +620,7 @@
     <t t-extend="ClientDetailsEdit">
         <t t-jquery="div.client-details-left" t-operation="append">
             <div class='client-detail'>
-                <span class='label'>Limite de Credito</span>
+                <span class='label'>Limite de Saldo</span>
                 <input class='detail client-credit-limit'  name='credit_limit'    type='text'    t-att-value='partner.credit_limit || ""'></input>
             </div>
         </t>
@@ -638,9 +638,9 @@
     <t t-name="MaxCreditExceedPopupWidget">
         <div class="modal-dialog">
             <div class="popup popup-textinput" style="height: 203px;">
-                <p class="title">Crédito máximo excedido</p>
+                <p class="title">Saldo máximo excedido</p>
                 <span align="center" style="font-size:16px;">
-                    Su límite de crédito restante es solo <t t-esc="widget.format_currency(widget.options.remaining_credit_limit)" />
+                    Su límite de Saldo restante es solo <t t-esc="widget.format_currency(widget.options.remaining_credit_limit)" />
                     <br />e intentas acreditar <t t-esc="widget.format_currency(widget.pos.get_order().get_due())" />
                 </span>
                 <div class="footer">

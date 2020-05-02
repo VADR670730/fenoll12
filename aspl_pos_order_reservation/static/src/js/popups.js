@@ -52,6 +52,10 @@ odoo.define('aspl_pos_order_reservation.popups', function (require) {
 				    this.pos.push_order(order);
 				    this.gui.show_screen('receipt');
 				}
+
+                if(order.attributes.client.remaining_credit_limit >= 0){
+                    $('.next').addClass('highlight');
+                }
             }else {
                 if(order && self.to_be_update_order.delivery_date != $('#delivery_datepicker').val()){
                 	var params = {

@@ -181,7 +181,12 @@ odoo.define('aspl_pos_order_reservation.models', function (require) {
             this.set('delivery_date', val)
         },
         get_delivery_date: function(){
-            return this.get('delivery_date');
+            var result = this.get('delivery_date');
+            if(this.get('delivery_date')) {
+                var tmp = this.get('delivery_date').split('-')
+                result = tmp[2] + '-' + tmp[1] + '-' + tmp[0];
+            }
+            return result;
         },
         set_cancel_order: function(val){
             this.set('cancel_order', val)
